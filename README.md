@@ -120,9 +120,39 @@ cv2.imwrite("test-output.jpg",dst)
 1. 鸟瞰视图的 像素间距(m/pix)
 2. 鸟瞰视图下边界到摄像机的距离
 
+图片 => 鸟瞰视图 => 点到图片底部距离d
+
+点到相机距离 pd =? d + d' =? D
+
+d'为底部到相机的距离(待标定)
+
+<img src="imgs/im4.png">
+
 ### 4. 目标检测
 
 #### 4.1 数据集
 
+#### 减速带 bump
+
+1. 手机拍摄 => resize
+2. 小摄像头拍摄 => calibration
+3. 百度、谷歌图片 => filter => resize
+
+数据标注：labelImg
+
+数据扩充：数据集 => 水平翻转 => 279张
+
+#### 人 person
+
+VOC数据集 => filter => person
+
 #### 4.2 网络模型
+
+Yolo v3
+
+训练集(~2k)：bump * 3 + VOC2007-test * 0.5
+
+验证集(~4k)：bump * 7 + VOC2012-train+val * 0.5
+
+训练步数：30k
 
