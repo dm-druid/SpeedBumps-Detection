@@ -6,41 +6,7 @@
 
 Matlab `Camera Calibrator App`
 
-```matlab
-% Define images to process
-imageFileNames = { '...' };
-
-% Detect checkerboards in images
-[imagePoints, boardSize, imagesUsed] = detectCheckerboardPoints(imageFileNames);
-imageFileNames = imageFileNames(imagesUsed);
-
-% Generate world coordinates of the corners of the squares
-squareSize = 65;  % in units of 'mm'
-worldPoints = generateCheckerboardPoints(boardSize, squareSize);
-
-% Calibrate the camera
-[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(imagePoints, worldPoints, ...
-    'EstimateSkew', false, 'EstimateTangentialDistortion', false, ...
-    'NumRadialDistortionCoefficients', 3, 'WorldUnits', 'mm', ...
-    'InitialIntrinsicMatrix', [], 'InitialRadialDistortion', []);
-
-% View reprojection errors
-h1=figure; showReprojectionErrors(cameraParams);
-
-% Visualize pattern locations
-h2=figure; showExtrinsics(cameraParams, 'CameraCentric');
-
-% Display parameter estimation errors
-displayErrors(estimationErrors, cameraParams);
-
-% For example, you can use the calibration data to remove effects of lens distortion.
-originalImage = imread(imageFileNames{1});
-undistortedImage = undistortImage(originalImage, cameraParams);
-
-% See additional examples of how to use the calibration data.  At the prompt type:
-% showdemo('MeasuringPlanarObjectsExample')
-% showdemo('StructureFromMotionExample')
-```
+标定的代码见 `./calibration/calibration.m`
 
 #### CheckBoard Images
 
@@ -68,28 +34,7 @@ dist = np.array([-0.347049837762688,
 
 #### 矫正
 
-```python
-# -*- coding:utf-8 -*-
-# python 2.7
-import cv2
-import numpy as np
-
-# 畸变参数
-dist = np.array([-0.347049837762688,
-				  0.165398310868444,
-				                  0,
-				                  0,
-				-0.0444392622226221])
-
-# 内参矩阵
-mtx = np.array([[366.8414,        0, 337.4132],
-				[       0, 366.1242, 182.8138],
-				[       0,        0,   1.0000]])
-
-img = cv2.imread("test.jpg")
-dst = cv2.undistort(img,mtx,dist,None,None)
-cv2.imwrite("test-output.jpg",dst)
-```
+矫正代码见 `./calibration/test.py`
 
 ### 2. 鸟瞰视图
 
@@ -112,6 +57,60 @@ cv2.imwrite("test-output.jpg",dst)
   ```
 
 <img src="imgs/im3.png">
+
+固定相机角度（螺丝刀，垫纸）
+
+TAC砖代替标定布
+
+困难：标定视野范围有限
+
+解决：鸟瞰视图的转换矩阵跟高度没有关系，所以先把摄像头放在相对比较低的高度，扩大标定范围（标定鸟瞰视图转换矩阵）。然后把摄像头放回小车，标定像素距离单位。
+
+测距最远距离：~6m
+
+__标定图__（原图，实际中先增强对比度，不然找不到点....没有标定布的尴尬）：
+
+假的假的，后来又拿了一张重新拍了，啧啧啧
+
+后来找到了一个好的位置，拍到了范围比较大的图，美滋滋
+
+然后就重新标定了一下，新数据已改，图没换
+
+<img src="imgs/im9.jpg">
+
+__标定像素距离单位__：
+
+<img src="imgs/im8.jpg">
+
+1. 5*60cm per 298pix
+2. 4*60cm per 238pix
+3. 3*60cm per 182pix
+
+1 pix =~ 1cm
+
+__测试__：
+
+<img src="imgs/im10.jpg">
+
+177(3\*60), 172(3\*60), 236(4\*60)
+
+精度：97.5%
+
+__标定鸟瞰视图底部到摄像机的距离__：
+
+p -> 底部：114像素
+
+p -> 摄像机：4*60 = 240cm
+
+底部 -> 摄像机：126cm
+
+```python
+mat = np.array([[-0.5115,   -1.4774,  428.8531],
+                [-0.0880,   -3.6296,  847.1490],
+                [-0.0001,   -0.0054,    1.0000]
+               ])
+```
+测距代码见 `./toEyesView/birdsView/distance.ipynb`
 
 ### 3. 距离计算
 
