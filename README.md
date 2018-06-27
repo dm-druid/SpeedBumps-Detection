@@ -1,5 +1,59 @@
 # SpeedBumps-Detection
 
+__数据集：__
+
+1. YOLO v3：`./images/dataset/xqqds-0620-train/`和`./images/dataset/xqqds-0620-val/`
+2. CNN Classifier：`./classifier/bbox/`
+
+__模型文件和权重：__
+
+上传到 [Google Drive](https://drive.google.com/open?id=1TgC7lOKrTNFNG35Yllc9_bIcV-o35Arz)
+
+__运行：__
+
+1. 下载darknet，把python-numpy一起编译进去，见 [lyq/CW-Hw/hw3/hw3_1](https://github.com/lyqun/CV-Hw/tree/master/hw3/hw3_1)
+2. 下载模型文件和权重
+3. 检测视频，运行`./detector/detect2-2.py`；检测图片，运行`./detector/detect0-2.py`
+
+__目录结构：__
+
+```
+./
+|----darknet/
+|	|----darknet.py
+|	|----final.weights
+|	|----cfg/
+|		|----model.cfg
+|----detect2-2.py
+|----detect0-2.py
+|----bump.mov
+|----test.jpg
+|----model.json
+|----weights.h5
+```
+
+__运行环境：__
+
+见 [lyq/CW-Hw/hw3/hw3_1](https://github.com/lyqun/CV-Hw/tree/master/hw3/hw3_1) 配置说明
+
+python3 + keras + tensoflow-gpu + opencv3
+
+文档、ppt、演示视频在 `./doc/final-pre/`
+
+
+
+有其他疑问的话，发邮件给我吧0.0
+
+lyq211003@gmail.com
+
+或者毛毛
+
+dm.sedum@gmail.com
+
+或者崔崔
+
+cuihejie331771@gmail.com
+
 ### 1. 矫正鱼眼畸变
 
 计算 __相机内参(5)__、__畸变参数(3+2 径向、切向)__
